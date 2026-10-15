@@ -1,0 +1,12 @@
+<% if notice.present? %>
+  <div class="flash flash-notice">
+    <span class="flash-icon">✓</span>
+    <span><%= notice %></span>
+  </div>
+<% end %>
+<% if alert.present? %>
+  <div class="flash flash-alert">
+    <span class="flash-icon">⚠️</span>
+    <span><%= alert %></span>
+  </div>
+<% end %>

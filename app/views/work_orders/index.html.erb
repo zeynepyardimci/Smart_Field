@@ -1,0 +1,72 @@
+<div class="dashboard-header">
+  <div class="header-titles">
+    <h1 class="page-title">İş Emirleri</h1>
+    <p class="page-subtitle">Saha görevleri ve anlık operasyon takibi</p>
+  </div>
+
+  <div class="header-actions">
+    <% if current_user.manager? %>
+      <%= link_to "+ Yeni İş Emri", new_work_order_path, class: "btn-primary" %>
+    <% end %>
+  </div>
+</div>
+
+<!-- KPI / Metric Ribbon (Clickable filters) -->
+<div class="kpi-grid">
+  <%= link_to work_orders_path(filter: "sla_breached"), class: "kpi-card #{'kpi-warning' if @sla_breach_count > 0} #{'kpi-active' if @scope == 'sla_breached'}" do %>
+    <div class="kpi-icon">🚨</div>
+    <div class="kpi-data">
+      <span class="kpi-number"><%= @sla_breach_count %></span>
+      <span class="kpi-label">Geciken SLA</span>
+    </div>
+  <% end %>
+
+  <%= link_to work_orders_path(filter: "critical"), class: "kpi-card #{'kpi-active' if @scope == 'critical'}" do %>
+    <div class="kpi-icon">⚡</div>
+    <div class="kpi-data">
+      <span class="kpi-number"><%= @critical_count %></span>
+      <span class="kpi-label">Kritik</span>
+    </div>
+  <% end %>
+
+  <%= link_to work_orders_path(filter: "in_progress"), class: "kpi-card #{'kpi-active' if @scope == 'in_progress'}" do %>
+    <div class="kpi-icon">🔧</div>
+    <div class="kpi-data">
+      <span class="kpi-number"><%= @in_progress_count %></span>
+      <span class="kpi-label">Sahada (İşlemde)</span>
+    </div>
+  <% end %>
+
+  <%= link_to work_orders_path(filter: "all"), class: "kpi-card #{'kpi-active' if @scope == 'all'}" do %>
+    <div class="kpi-icon">📋</div>
+    <div class="kpi-data">
+      <span class="kpi-number"><%= @total_active_count %></span>
+      <span class="kpi-label">Toplam Açık</span>
+    </div>
+  <% end %>
+</div>
+
+<!-- Filter Tabs (Segmented control) -->
+<div class="filter-bar">
+  <%= link_to "Tüm Aktifler", work_orders_path(filter: "all"), class: "filter-chip #{'active' if @scope == 'all'}" %>
+  <%= link_to "Bana Atananlar", work_orders_path(filter: "my_tasks"), class: "filter-chip #{'active' if @scope == 'my_tasks'}" %>
+  <%= link_to "Gecikenler (#{@sla_breach_count})", work_orders_path(filter: "sla_breached"), class: "filter-chip #{'active' if @scope == 'sla_breached'}" %>
+  <%= link_to "Kritik", work_orders_path(filter: "critical"), class: "filter-chip #{'active' if @scope == 'critical'}" %>
+  <%= link_to "Sahada", work_orders_path(filter: "in_progress"), class: "filter-chip #{'active' if @scope == 'in_progress'}" %>
+  <%= link_to "Tamamlananlar", work_orders_path(filter: "completed"), class: "filter-chip #{'active' if @scope == 'completed'}" %>
+</div>
+
+<!-- Work Orders List (Hotwire Stream enabled) -->
+<div class="work-orders-feed" id="work_orders_list">
+  <% if @work_orders.any? %>
+    <% @work_orders.each do |work_order| %>
+      <%= render "work_order_card", work_order: work_order %>
+    <% end %>
+  <% else %>
+    <div class="empty-state">
+      <div class="empty-icon">📂</div>
+      <h3>Seçili filtrede iş emri yok</h3>
+      <p>Yeni bir iş emri oluşturabilir veya diğer sekmelere göz atabilirsiniz.</p>
+    </div>
+  <% end %>
+</div>

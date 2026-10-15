@@ -1,0 +1,69 @@
+<div class="login-wrapper">
+  <div class="login-container">
+    <div class="login-header">
+      <h1 class="login-title">
+        <span class="icon">⚡</span> Smart Field
+      </h1>
+      <p class="login-subtitle">Saha Servis ve Operasyon Yönetimi</p>
+    </div>
+
+    <div class="login-card">
+      <%= form_with(url: login_path, local: true, class: "login-form", id: "loginForm") do |f| %>
+        <div class="form-group">
+          <%= f.label :email, "E-posta Adresi", class: "form-label" %>
+          <div class="input-with-icon">
+            <span class="input-icon">✉️</span>
+            <%= f.email_field :email, id: "emailInput", placeholder: "isim@smartfield.io", class: "form-input", required: true, autofocus: true %>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :password, "Şifre", class: "form-label" %>
+          <div class="input-with-icon">
+            <span class="input-icon">🔒</span>
+            <%= f.password_field :password, id: "passwordInput", placeholder: "••••••••", class: "form-input", required: true %>
+          </div>
+        </div>
+
+        <%= f.submit "Giriş Yap", class: "btn-primary btn-block btn-lg" %>
+      <% end %>
+
+      <div class="auth-switch-link">
+        <span>Hesabınız yok mu?</span>
+        <%= link_to "Yeni Hesap Oluştur", register_path, class: "btn-link-highlight" %>
+      </div>
+
+      <div class="quick-demo-section">
+        <div class="divider">
+          <span>TEK TIKLA DEMO GİRİŞİ</span>
+        </div>
+        <div class="demo-buttons-grid">
+          <button type="button" class="btn-demo-pill manager-pill" onclick="fillCredentials('sarah.jenkins@smartfield.io', 'password123')">
+            <span class="pill-role">👑 Yönetici</span>
+            <span class="pill-name">Sarah Jenkins</span>
+          </button>
+          <button type="button" class="btn-demo-pill tech-pill" onclick="fillCredentials('marcus.vance@smartfield.io', 'password123')">
+            <span class="pill-role">🛠️ Saha Teknisyeni</span>
+            <span class="pill-name">Marcus Vance</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-footer">
+      <span>© 2026 Smart Field</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  function fillCredentials(email, password) {
+    const emailField = document.getElementById('emailInput');
+    const passField = document.getElementById('passwordInput');
+    if (emailField && passField) {
+      emailField.value = email;
+      passField.value = password;
+      emailField.focus();
+    }
+  }
+</script>

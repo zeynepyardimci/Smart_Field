@@ -1,0 +1,68 @@
+<div class="wo-detail-container">
+  <div class="breadcrumb">
+    <%= link_to "← İş Emirlerine Dön", work_orders_path, class: "btn-back" %>
+  </div>
+
+  <div class="wo-detail-card">
+    <div class="detail-top-bar">
+      <div>
+        <span class="wo-number-lg"><%= @work_order.order_number %></span>
+        <span class="badge <%= @work_order.priority_badge_class %>"><%= work_order_priority_label(@work_order.priority) %></span>
+        <span class="badge <%= @work_order.status_badge_class %>"><%= work_order_status_label(@work_order.status) %></span>
+      </div>
+
+      <div>
+        <% sla_info = sla_badge_content(@work_order) %>
+        <span class="sla-badge <%= sla_info[:class] %>-lg"><%= sla_info[:text] %></span>
+      </div>
+    </div>
+
+    <h1 class="wo-detail-title"><%= @work_order.title %></h1>
+    <p class="wo-detail-desc"><%= @work_order.description %></p>
+
+    <div class="detail-sections-grid">
+      <div class="info-block">
+        <h4>Müşteri & Konum</h4>
+        <p><strong>Kurum:</strong> <%= @work_order.customer_name %></p>
+        <p><strong>Bina / Tesis:</strong> <%= @work_order.facility_location %></p>
+      </div>
+
+      <div class="info-block">
+        <h4>Ekipman Bilgisi</h4>
+        <p><strong>Model:</strong> <%= @work_order.asset_name %></p>
+        <p><strong>Seri No:</strong> <%= @work_order.asset_serial_number.presence || '—' %></p>
+      </div>
+
+      <div class="info-block">
+        <h4>Operasyon Sorumluları</h4>
+        <p><strong>Atanan:</strong> <%= @work_order.assigned_to&.name || 'Atama Bekliyor' %></p>
+        <p><strong>Oluşturan:</strong> <%= @work_order.created_by.name %></p>
+        <p><strong>Oluşturulma:</strong> <%= @work_order.created_at.strftime("%d.%m.%Y %H:%M") %></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audit Trail / Geçiş Geçmişi -->
+  <div class="audit-trail-container">
+    <h3 class="section-title">🕒 Denetim İzi & Durum Geçiş Geçmişi</h3>
+    <div class="timeline">
+      <% @transitions.each do |trans| %>
+        <div class="timeline-item">
+          <div class="timeline-point"></div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <span class="timeline-action">
+                <%= work_order_status_label(trans.from_status) %> → <strong><%= work_order_status_label(trans.to_status) %></strong>
+              </span>
+              <span class="timeline-time"><%= trans.created_at.strftime("%d.%m.%Y %H:%M:%S") %></span>
+            </div>
+            <% if trans.note.present? %>
+              <p class="timeline-note"><%= trans.note %></p>
+            <% end %>
+            <span class="timeline-user">İşlemi Yapan: <strong><%= trans.changed_by.name %></strong> (<%= user_role_label(trans.changed_by.role) %>)</span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

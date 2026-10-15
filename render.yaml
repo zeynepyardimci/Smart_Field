@@ -1,0 +1,24 @@
+databases:
+  - name: smart-field-db
+    plan: free
+    databaseName: smart_field_production
+    user: smart_field
+
+services:
+  - type: web
+    name: smart-field
+    runtime: ruby
+    plan: free
+    buildCommand: "./bin/render-build.sh"
+    startCommand: "bundle exec puma -C config/puma.rb"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: smart-field-db
+          property: connectionString
+      - key: RAILS_MASTER_KEY
+        sync: false
+      - key: RAILS_MAX_THREADS
+        value: 5
+      - key: WEB_CONCURRENCY
+        value: 2

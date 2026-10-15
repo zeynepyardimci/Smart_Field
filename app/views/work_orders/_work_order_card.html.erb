@@ -1,0 +1,67 @@
+<%= turbo_frame_tag "work_order_#{work_order.id}" do %>
+  <div class="wo-card <%= 'wo-sla-breached' if work_order.sla_breached? %>">
+    <div class="wo-card-header">
+      <div class="wo-id-badge">
+        <span class="wo-number"><%= work_order.order_number %></span>
+        <span class="badge <%= work_order.priority_badge_class %>">
+          <%= work_order_priority_label(work_order.priority) %>
+        </span>
+        <span class="badge <%= work_order.status_badge_class %>">
+          <%= work_order_status_label(work_order.status) %>
+        </span>
+      </div>
+
+      <div class="wo-sla-indicator">
+        <% sla_info = sla_badge_content(work_order) %>
+        <span class="sla-badge <%= sla_info[:class] %>">
+          <%= sla_info[:text] %>
+        </span>
+      </div>
+    </div>
+
+    <div class="wo-card-body">
+      <h3 class="wo-title"><%= link_to work_order.title, work_order_path(work_order), data: { turbo_frame: "_top" } %></h3>
+      <p class="wo-desc"><%= truncate(work_order.description, length: 130) %></p>
+
+      <div class="wo-meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Müşteri & Konum:</span>
+          <span class="meta-value"><%= work_order.customer_name %> • <%= work_order.facility_location %></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Ekipman:</span>
+          <span class="meta-value"><%= work_order.asset_name %> <%= "(#{work_order.asset_serial_number})" if work_order.asset_serial_number.present? %></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Mühendis:</span>
+          <span class="meta-value"><%= work_order.assigned_to&.name || "Atama Bekliyor" %></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ergonomic Action Bar -->
+    <div class="wo-actions-bar">
+      <div class="inline-transitions">
+        <% if work_order.status == "new_order" %>
+          <% if current_user.manager? %>
+            <%= button_to "📋 Marcus'a Ata", transition_work_order_path(work_order, target_status: :assigned), method: :patch, class: "btn-action btn-assign" %>
+          <% end %>
+        <% elsif work_order.status == "assigned" %>
+          <%= button_to "▶️ İşe Başla", transition_work_order_path(work_order, target_status: :in_progress), method: :patch, class: "btn-action btn-start" %>
+          <%= button_to "⚠️ Bloke Et", transition_work_order_path(work_order, target_status: :blocked), method: :patch, class: "btn-action btn-blocked" %>
+        <% elsif work_order.status == "in_progress" %>
+          <%= button_to "✅ İşi Tamamla", transition_work_order_path(work_order, target_status: :completed), method: :patch, class: "btn-action btn-complete" %>
+          <%= button_to "⚠️ Bloke Et", transition_work_order_path(work_order, target_status: :blocked), method: :patch, class: "btn-action btn-blocked" %>
+        <% elsif work_order.status == "blocked" %>
+          <%= button_to "🔄 Devam Et", transition_work_order_path(work_order, target_status: :in_progress), method: :patch, class: "btn-action btn-start" %>
+        <% elsif work_order.status == "completed" %>
+          <span class="completed-tag">✓ Tamamlandı</span>
+        <% end %>
+      </div>
+
+      <div class="secondary-links">
+        <%= link_to "Detaylar →", work_order_path(work_order), class: "btn-secondary btn-sm", data: { turbo_frame: "_top" } %>
+      </div>
+    </div>
+  </div>
+<% end %>

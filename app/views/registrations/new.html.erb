@@ -1,0 +1,73 @@
+<div class="login-wrapper">
+  <div class="login-container">
+    <div class="login-header">
+      <h1 class="login-title">
+        <span class="icon">⚡</span> Smart Field
+      </h1>
+      <p class="login-subtitle">Yeni Kullanıcı Kaydı</p>
+    </div>
+
+    <div class="login-card">
+      <%= form_with(model: @user, url: register_path, local: true, class: "login-form", id: "registerForm") do |f| %>
+        <% if @user.errors.any? %>
+          <div class="form-errors">
+            <strong>Kayıt yapılamadı:</strong>
+            <ul>
+              <% @user.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="form-group">
+          <%= f.label :name, "Ad Soyad", class: "form-label" %>
+          <div class="input-with-icon">
+            <span class="input-icon">👤</span>
+            <%= f.text_field :name, placeholder: "Örn: Ahmet Yılmaz", class: "form-input", required: true, autofocus: true %>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :email, "E-posta Adresi", class: "form-label" %>
+          <div class="input-with-icon">
+            <span class="input-icon">✉️</span>
+            <%= f.email_field :email, placeholder: "ahmet@smartfield.io", class: "form-input", required: true %>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :role, "Sistem Rolü", class: "form-label" %>
+          <%= f.select :role, [["Saha Teknisyeni", "technician"], ["Yönetici", "manager"]], {}, class: "form-select" %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :password, "Şifre", class: "form-label" %>
+          <div class="input-with-icon">
+            <span class="input-icon">🔒</span>
+            <%= f.password_field :password, placeholder: "En az 6 karakter", class: "form-input", required: true %>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :password_confirmation, "Şifre Tekrar", class: "form-label" %>
+          <div class="input-with-icon">
+            <span class="input-icon">🔒</span>
+            <%= f.password_field :password_confirmation, placeholder: "Şifrenizi tekrar girin", class: "form-input", required: true %>
+          </div>
+        </div>
+
+        <%= f.submit "Kayıt Ol ve Başla", class: "btn-primary btn-block btn-lg" %>
+      <% end %>
+
+      <div class="auth-switch-link">
+        <span>Zaten bir hesabınız var mı?</span>
+        <%= link_to "Giriş Yap", login_path, class: "btn-link-highlight" %>
+      </div>
+    </div>
+
+    <div class="login-footer">
+      <span>© 2026 Smart Field</span>
+    </div>
+  </div>
+</div>

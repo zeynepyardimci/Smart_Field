@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Smart Field - Saha Servis Yönetimi" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/assets/application.css">
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" rescue nil %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <% if logged_in? %>
+      <header class="app-nav">
+        <div class="nav-container">
+          <div class="brand">
+            <%= link_to root_path, class: "brand-link" do %>
+              <span class="brand-logo">⚡</span>
+              <span class="brand-name">Smart Field</span>
+            <% end %>
+          </div>
+
+          <div class="user-session">
+            <div class="user-info">
+              <span class="user-name"><%= current_user.name %></span>
+              <span class="badge-role"><%= user_role_label(current_user.role) %></span>
+            </div>
+            <%= button_to "Çıkış Yap", logout_path, method: :delete, class: "btn-logout" %>
+          </div>
+        </div>
+      </header>
+    <% end %>
+
+    <main class="main-wrapper">
+      <div id="flash_messages">
+        <%= render "shared/flash", notice: notice, alert: alert %>
+      </div>
+
+      <%= yield %>
+    </main>
+
+    <footer class="app-footer">
+      <div class="footer-container">
+        <p>© 2026 Smart Field • Saha Servis Yönetimi</p>
+      </div>
+    </footer>
+  </body>
+</html>

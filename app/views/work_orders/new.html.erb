@@ -1,0 +1,76 @@
+<div class="form-container">
+  <div class="breadcrumb">
+    <%= link_to "← Listeye Dön", work_orders_path, class: "btn-back" %>
+  </div>
+
+  <div class="form-card">
+    <h2 class="form-title">Yeni İş Emri</h2>
+    <p class="form-subtitle">Saha görevi ve hedef SLA tanımlayın.</p>
+
+    <%= form_with(model: @work_order, local: true, class: "styled-form") do |f| %>
+      <% if @work_order.errors.any? %>
+        <div class="form-errors">
+          <h4>Kaydedilemedi (<%= @work_order.errors.count %> hata):</h4>
+          <ul>
+            <% @work_order.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="form-group">
+        <%= f.label :title, "İş Emri Başlığı", class: "form-label" %>
+        <%= f.text_field :title, placeholder: "Örn: SIGNA Pioneer 3.0T MRI - Soğutma Pompası Değişimi", class: "form-input", required: true %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :description, "Arıza ve Bakım Detayları", class: "form-label" %>
+        <%= f.text_area :description, rows: 4, placeholder: "Saha teknisyenine iletilecek arıza kodları ve talimatlar...", class: "form-input" %>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group half">
+          <%= f.label :customer_name, "Müşteri / Kurum Adı", class: "form-label" %>
+          <%= f.text_field :customer_name, placeholder: "Örn: Acıbadem Maslak Hastanesi", class: "form-input", required: true %>
+        </div>
+        <div class="form-group half">
+          <%= f.label :facility_location, "Tesis / Konum", class: "form-label" %>
+          <%= f.text_field :facility_location, placeholder: "Örn: İstanbul - Radyoloji Katı", class: "form-input", required: true %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group half">
+          <%= f.label :asset_name, "Ekipman / Model", class: "form-label" %>
+          <%= f.text_field :asset_name, placeholder: "Örn: GE Discovery MR750w", class: "form-input", required: true %>
+        </div>
+        <div class="form-group half">
+          <%= f.label :asset_serial_number, "Seri No / Etiket", class: "form-label" %>
+          <%= f.text_field :asset_serial_number, placeholder: "Örn: GE-MR-88123-X", class: "form-input" %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group half">
+          <%= f.label :priority, "Öncelik Derecesi", class: "form-label" %>
+          <%= f.select :priority, WorkOrder.priorities.keys.map { |k| [work_order_priority_label(k), k] }, {}, class: "form-select" %>
+        </div>
+        <div class="form-group half">
+          <%= f.label :due_at, "SLA Bitiş Hedefi", class: "form-label" %>
+          <%= f.datetime_local_field :due_at, class: "form-input", required: true %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :assigned_to_id, "Atanacak Teknisyen", class: "form-label" %>
+        <%= f.collection_select :assigned_to_id, User.technicians, :id, :name, { include_blank: "— Daha Sonra Ata —" }, { class: "form-select" } %>
+      </div>
+
+      <div class="form-actions">
+        <%= f.submit "İş Emrini Kaydet ve Yayınla", class: "btn-submit" %>
+        <%= link_to "İptal", work_orders_path, class: "btn-cancel" %>
+      </div>
+    <% end %>
+  </div>
+</div>
